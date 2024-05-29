@@ -8,23 +8,35 @@
 </head>
 <body>
   <div class="container">
+    <!-- General title of the dashboard -->
     <h1 class="general-title" id="general-title">Road Accidents Mortality in Greece (2022)</h1>
+    
     <div class="content">
       <div class="left-panel">
+        <!-- Title for the map section -->
         <h1 class="title" id="main-title">Greece Road Accidents Mortality by Municipalities</h1>
+        
+        <!-- Container for the maps -->
         <div class="map-container">
           <div id="map-1"></div>
           <div id="map-2" style="display: none;"></div>
         </div>
       </div>
+
       <div class="right-panel">
+        <!-- Container for the stacked bar chart -->
         <div id="chart"></div>
+
+        <!-- Control panel for selecting the map type and year -->
         <div style="display: flex; justify-content: center; margin-top: 50px; border: 2px solid black;">
+          <!-- Map type selector -->
           <div class="map-selector" style="margin-right: 220px; padding: 10px">
             <label>Select Map:</label>
             <label><input type="radio" name="map-toggle" value="municipalities" checked> Municipalities</label>
             <label><input type="radio" name="map-toggle" value="regional"> Regional Units</label>
           </div>
+          
+          <!-- Year selector -->
           <div class="year-selector" style="padding: 10px;">
             <label for="year-select">Select Year:</label>
             <select id="year-select">
@@ -41,6 +53,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Link to the JavaScript file -->
   <script defer src="scripts.js"></script>
 </body>
 </html>
