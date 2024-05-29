@@ -6,10 +6,12 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <style>
     body { background-color: #f0f0f0; font-family: sans-serif; display: flex; justify-content: center; }
-    .container { display: flex; margin-top: 50px; }
+    .container { display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
+    .content { display: flex; margin-top: 20px; }
     .left-panel, .right-panel { display: flex; flex-direction: column; align-items: center; }
     .left-panel { margin-right: 20px; }
     .title { font-size: 28px; font-weight: bold; margin-bottom: 20px; color: #000000; }
+    .general-title { font-size: 32px; font-weight: bold; text-decoration: underline; margin-bottom: 30px; color: #000000; }
     svg { display: block; margin: 0 auto; }
     .year-selector, .map-selector { margin-top: 20px; }
     .year-selector label, .map-selector label { display: block; margin-bottom: 5px; font-weight: bold; }
@@ -34,28 +36,26 @@
 </head>
 <body>
   <div class="container">
-    <div class="left-panel">
-      <h1 class="title" id="main-title">Greece Road Accidents Mortality by Municipalities</h1>
-      <div class="map-container">
-        <div id="map-1"></div>
-        <div id="map-2" style="display: none;"></div>
+    <h1 class="general-title" id="general-title">Road Accidents Mortality in Greece (2022)</h1>
+    <div class="content">
+      <div class="left-panel">
+        <h1 class="title" id="main-title">Greece Road Accidents Mortality by Municipalities</h1>
+        <div class="map-container">
+          <div id="map-1"></div>
+          <div id="map-2" style="display: none;"></div>
+        </div>
       </div>
-      <div class="year-selector">
-        <label for="year-select">Select Year:</label>
-        <select id="year-select"></select>
-      </div>
-    </div>
-    <div class="right-panel">
-      <div id="chart"></div>
-      <div style="display: flex; justify-content: center; margin-top: 20px;">
-        <div class="map-selector" style="margin-right: 220px;">
+      <div class="right-panel">
+        <div id="chart"></div>
+        <div style="display: flex; justify-content: center; margin-top: 50px; border: 2px solid black;">
+          <div class="map-selector" style="margin-right: 220px; padding: 10px">
             <label>Select Map:</label>
             <label><input type="radio" name="map-toggle" value="municipalities" checked> Municipalities</label>
             <label><input type="radio" name="map-toggle" value="regional"> Regional Units</label>
-        </div>
-        <div class="year-selector" style="margin-left: 20px;">
-          <label for="yearSelect">Select Year: </label>
-          <select id="yearSelect">
+          </div>
+          <div class="year-selector" style="padding: 10px;">
+            <label for="year-select">Select Year:</label>
+            <select id="year-select">
               <option value="2016">2016</option>
               <option value="2017">2017</option>
               <option value="2018">2018</option>
@@ -63,7 +63,8 @@
               <option value="2020">2020</option>
               <option value="2021">2021</option>
               <option value="2022" selected>2022</option>
-          </select>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -194,7 +195,8 @@
           .range([0, 200]);
 
         function updateMap(selectedYear) {
-          document.getElementById(titleId).textContent = `Greece Road Accidents Mortality by ${region}`;
+          document.getElementById(titleId).textContent = `Road Accidents Mortality by ${region}`;
+          document.getElementById("general-title").textContent = `Road Accidents Mortality in Greece (${selectedYear})`;
           const filteredData = deathsData.filter(d => d.year === selectedYear);
           deathsMap.clear();
           filteredData.forEach(d => deathsMap.set(d.LEKTIKO, { deaths: +d.deaths, location: d.location }));
@@ -316,6 +318,7 @@
             .attr("fill-opacity", 0.5)
             .attr("stroke", "#8B0000")
             .attr("stroke-width", 0.5)
+           
             .attr("d", d => `M-5,0 Q0,-${lengthScale(d)} 5,0`);
 
           legend.append("text")
@@ -380,6 +383,7 @@
         const selectedYear = this.value;
         updateMap1(selectedYear);
         updateMap2(selectedYear);
+        updateChartData(selectedYear);
       });
     }
 
@@ -389,7 +393,7 @@
       updateMap1 = updateMapFunction;
       updateMap1("2022");
     });
-    createMap("#map-2", "main-title", "Municipalities", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
+    createMap("#map-2", "main-title", "Regional Units", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
       updateMap2 = updateMapFunction;
       updateMap2("2022");
     });
@@ -401,14 +405,15 @@
 
     d3.selectAll('input[name="map-toggle"]').on("change", function() {
       const selectedMap = this.value;
+      const selectedYear = d3.select("#year-select").property("value");
       if (selectedMap === "municipalities") {
         d3.select("#map-1").style("display", null);
         d3.select("#map-2").style("display", "none");
-        d3.select("#main-title").text("Greece Road Accidents Mortality by Municipalities");
+        d3.select("#main-title").text(`Road Accidents Mortality by Municipalities`);
       } else {
         d3.select("#map-1").style("display", "none");
         d3.select("#map-2").style("display", null);
-        d3.select("#main-title").text("Greece Road Accidents Mortality by Regional Units");
+        d3.select("#main-title").text(`Road Accidents Mortality by Regional Units`);
       }
     });
 
@@ -431,7 +436,7 @@
       const height = 500 - margin.top - margin.bottom;
 
       // Filter data by selected year
-      const filteredData = data.filter(d => d.year === year);
+      const filteredData = data.filter(d => d.year === +year);
 
       // Extract unique age groups
       const ageGroups = Array.from(new Set(filteredData.map(d => d.age)));
@@ -499,12 +504,14 @@
           .attr("font-family", "sans-serif")
           .attr("font-size", 28)
           .attr("font-weight", "bold")
-          .text("Mortality by Age and Type of Vehicle in Greece");
+          .text(`Mortality by Age and Type of Vehicle`);
 
       // Add X axis
       g.append("g")
           .attr("transform", `translate(0,${height})`)
-          .call(d3.axisBottom(x));
+          .call(d3.axisBottom(x))
+          .selectAll("text")
+          .attr("font-size", "14px");
 
       // X axis legend
       g.append("text")
@@ -512,12 +519,14 @@
           .attr("y", height + margin.bottom - 10)
           .attr("text-anchor", "middle")
           .attr("font-family", "sans-serif")
-          .attr("font-size", 12)
+          .attr("font-size", 16)
           .text("Vehicles");
 
       // Add Y axis
       g.append("g")
-          .call(d3.axisLeft(y));
+          .call(d3.axisLeft(y))
+          .selectAll("text")
+          .attr("font-size", "14px");
 
       // Y axis legend
       g.append("text")
@@ -526,7 +535,7 @@
           .attr("y", -margin.left + 20)
           .attr("text-anchor", "middle")
           .attr("font-family", "sans-serif")
-          .attr("font-size", 12)
+          .attr("font-size", 16)
           .text("Number of Deaths");
 
       // Add the stacks
@@ -546,7 +555,7 @@
       // Add a legend
       const legend = svg.append("g")
           .attr("font-family", "sans-serif")
-          .attr("font-size", 10)
+          .attr("font-size", 14)
           .attr("text-anchor", "end")
           .attr("transform", `translate(${width + margin.left + 40}, ${margin.top})`); // Move legend to the right
 
@@ -574,25 +583,26 @@
           .attr("y", margin.top + ageGroups.length * 20 + 10)
           .attr("text-anchor", "end")
           .attr("font-family", "sans-serif")
-          .attr("font-size", 12)
+          .attr("font-size", 16)
           .text("Age (years)");
     }
 
-    loadData().then(data => {
-      const yearSelect = d3.select("#yearSelect");
-      const defaultYear = +yearSelect.property("value");
+    let chartData;
 
-      // Initial chart display
-      updateChart(data, defaultYear);
+    function updateChartData(selectedYear) {
+      if (!chartData) {
+        loadData().then(data => {
+          chartData = data;
+          updateChart(chartData, selectedYear);
+        }).catch(error => {
+          console.error('Error loading or processing data:', error);
+        });
+      } else {
+        updateChart(chartData, selectedYear);
+      }
+    }
 
-      // Update chart when a new year is selected
-      yearSelect.on("change", function() {
-          const selectedYear = +d3.select(this).property("value");
-          updateChart(data, selectedYear);
-      });
-    }).catch(error => {
-        console.error('Error loading or processing data:', error);
-    });
+    updateChartData(2022);
   </script>
 </body>
 </html>
