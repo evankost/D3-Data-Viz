@@ -40,15 +40,14 @@
         <div id="map-1"></div>
         <div id="map-2" style="display: none;"></div>
       </div>
+      <div class="year-selector">
+        <label for="year-select">Select Year:</label>
+        <select id="year-select"></select>
+      </div>
     </div>
     <div class="right-panel">
       <div id="chart"></div>
       <div style="display: flex; justify-content: center; margin-top: 20px;">
-        <div class="map-selector" style="margin-right: 100px;">
-            <label>Select Map:</label>
-            <label><input type="radio" name="map-toggle" value="municipalities" checked> Municipalities</label>
-            <label><input type="radio" name="map-toggle" value="regional"> Regional Units</label>
-          </div>
         <div class="year-selector" style="margin-left: 20px;">
           <label for="yearSelect">Select Year: </label>
           <select id="yearSelect">
@@ -60,6 +59,11 @@
               <option value="2021">2021</option>
               <option value="2022" selected>2022</option>
           </select>
+        </div>
+        <div class="map-selector" style="margin-left: 20px;">
+          <label>Select Map:</label>
+          <label><input type="radio" name="map-toggle" value="municipalities" checked> Municipalities</label>
+          <label><input type="radio" name="map-toggle" value="regional"> Regional Units</label>
         </div>
       </div>
     </div>
@@ -138,8 +142,8 @@
       ]).then(([deathsData, geoData]) => {
         const years = [...new Set(deathsData.map(d => d.year))].sort();
 
-        if (!d3.select("#yearSelect").selectAll("option").size()) {
-          d3.select("#yearSelect").selectAll("option")
+        if (!d3.select("#year-select").selectAll("option").size()) {
+          d3.select("#year-select").selectAll("option")
             .data(years)
             .join("option")
             .text(d => d)
@@ -294,7 +298,7 @@
 
         updateMapFunction(updateMap);
 
-        d3.select("#yearSelect").property("value", "2022");
+        d3.select("#year-select").property("value", "2022");
 
         if (mapId === "#map-1") {
           legend = svg.append("g")
@@ -358,7 +362,7 @@
 
           selectedLocation = d.properties;
 
-          const selectedYear = d3.select("#yearSelect").property("value");
+          const selectedYear = d3.select("#year-select").property("value");
           const locationData = deathsMap.get(d.properties.LEKTIKO);
           if (locationData) {
             selectedTitle.text(locationData.location).style("display", null);
@@ -372,7 +376,7 @@
     }
 
     function updateAllMaps(updateMap1, updateMap2) {
-      d3.select("#yearSelect").on("change", function() {
+      d3.select("#year-select").on("change", function() {
         const selectedYear = this.value;
         updateMap1(selectedYear);
         updateMap2(selectedYear);
