@@ -48,6 +48,11 @@
     <div class="right-panel">
       <div id="chart"></div>
       <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <div class="map-selector" style="margin-right: 220px;">
+            <label>Select Map:</label>
+            <label><input type="radio" name="map-toggle" value="municipalities" checked> Municipalities</label>
+            <label><input type="radio" name="map-toggle" value="regional"> Regional Units</label>
+        </div>
         <div class="year-selector" style="margin-left: 20px;">
           <label for="yearSelect">Select Year: </label>
           <select id="yearSelect">
@@ -59,11 +64,6 @@
               <option value="2021">2021</option>
               <option value="2022" selected>2022</option>
           </select>
-        </div>
-        <div class="map-selector" style="margin-left: 20px;">
-          <label>Select Map:</label>
-          <label><input type="radio" name="map-toggle" value="municipalities" checked> Municipalities</label>
-          <label><input type="radio" name="map-toggle" value="regional"> Regional Units</label>
         </div>
       </div>
     </div>
