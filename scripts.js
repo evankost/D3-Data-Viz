@@ -319,7 +319,7 @@ createMap("#map-1", "main-title", "Municipalities", "./deaths_mun.csv", "./greec
   updateMap1 = updateMapFunction;
   updateMap1("2022");
 });
-createMap("#map-2", "main-title", "Regional Units", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
+createMap("#map-2", "main-title", "Municipalities", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
   updateMap2 = updateMapFunction;
   updateMap2("2022");
 });
@@ -339,7 +339,7 @@ d3.selectAll('input[name="map-toggle"]').on("change", function() {
   } else {
     d3.select("#map-1").style("display", "none");
     d3.select("#map-2").style("display", null);
-    d3.select("#main-title").text(`Road Accidents Mortality by Municipalities`);
+    d3.select("#main-title").text(`Road Accidents Mortality by Regional Units`);
   }
 });
 
