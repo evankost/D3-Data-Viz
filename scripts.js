@@ -464,12 +464,6 @@ function updateChart(data, year) {
       .attr("font-size", 16)
       .text("Number of Deaths");
 
-  const stackGroups = g.append("g")
-    .selectAll("g")
-    .data(stack)
-    .enter().append("g")
-    .attr("fill", d => ageGroupColor[d.key]);
-
   const rects = stackGroups.selectAll("rect")
     .data(d => d);
 
