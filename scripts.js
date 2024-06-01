@@ -479,9 +479,9 @@ function updateChart(data, year) {
     .attr("y", d => y(0))
     .attr("height", 0)
     .attr("width", x.bandwidth())
-    .merge(rects) // Merge enter and update selections
+    .merge(rects)
     .transition()
-    .duration(750)
+    .duration(1200)
     .attr("x", d => x(d.data.state))
     .attr("y", d => y(d[1]))
     .attr("height", d => y(d[0]) - y(d[1]))
