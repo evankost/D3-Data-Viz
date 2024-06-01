@@ -315,15 +315,16 @@ function updateAllMaps(updateMap1, updateMap2) {
 
 let updateMap1, updateMap2;
 
-createMap("#map-2", "main-title", "Regional Units", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
-  updateMap2 = updateMapFunction;
-  updateMap2("2022");
-});
+
 createMap("#map-1", "main-title", "Municipalities", "./deaths_mun.csv", "./greece-municipalities.json", function(updateMapFunction) {
   updateMap1 = updateMapFunction;
   updateMap1("2022");
 });
 
+createMap("#map-2", "main-title", "Regional Units", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
+  updateMap2 = updateMapFunction;
+  updateMap2("2022");
+});
 
 updateAllMaps(
   (year) => updateMap1 && updateMap1(year),
