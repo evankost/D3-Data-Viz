@@ -479,7 +479,7 @@ function updateChart(data, year) {
     .attr("height", 0)
     .attr("width", x.bandwidth())
     .transition()
-    .duration(750)
+    .duration(1200)
     .attr("y", d => y(d[1]))
     .attr("height", d => y(d[0]) - y(d[1]));
 
