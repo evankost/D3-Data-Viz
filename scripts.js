@@ -464,25 +464,32 @@ function updateChart(data, year) {
       .attr("font-size", 16)
       .text("Number of Deaths");
 
-  // Add the stacks
   const stackGroups = g.append("g")
     .selectAll("g")
     .data(stack)
     .enter().append("g")
     .attr("fill", d => ageGroupColor[d.key]);
 
-  stackGroups.selectAll("rect")
-    .data(d => d)
-    .enter().append("rect")
+  const rects = stackGroups.selectAll("rect")
+    .data(d => d);
+
+  // Enter selection
+  rects.enter().append("rect")
     .attr("x", d => x(d.data.state))
     .attr("y", d => y(0))
     .attr("height", 0)
     .attr("width", x.bandwidth())
+    .merge(rects) // Merge enter and update selections
     .transition()
-    .duration(1200)
+    .duration(750)
+    .attr("x", d => x(d.data.state))
     .attr("y", d => y(d[1]))
-    .attr("height", d => y(d[0]) - y(d[1]));
+    .attr("height", d => y(d[0]) - y(d[1]))
+    .attr("width", x.bandwidth());
 
+  // Exit selection
+  rects.exit().remove();
+  
   // Add a legend
   const legend = svg.append("g")
       .attr("font-family", "sans-serif")
