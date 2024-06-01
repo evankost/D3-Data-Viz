@@ -339,7 +339,7 @@ d3.selectAll('input[name="map-toggle"]').on("change", function() {
   } else {
     d3.select("#map-1").style("display", "none");
     d3.select("#map-2").style("display", null);
-    d3.select("#main-title").text(`Road Accidents Mortality by Regional Units`);
+    d3.select("#main-title").text(`Road Accidents Mortality by Municipalities`);
   }
 });
 
