@@ -465,18 +465,23 @@ function updateChart(data, year) {
       .text("Number of Deaths");
 
   // Add the stacks
-  g.append("g")
+  const stackGroups = g.append("g")
     .selectAll("g")
     .data(stack)
     .enter().append("g")
-      .attr("fill", d => ageGroupColor[d.key])
-    .selectAll("rect")
+    .attr("fill", d => ageGroupColor[d.key]);
+
+  stackGroups.selectAll("rect")
     .data(d => d)
     .enter().append("rect")
-      .attr("x", d => x(d.data.state))
-      .attr("y", d => y(d[1]))
-      .attr("height", d => y(d[0]) - y(d[1]))
-      .attr("width", x.bandwidth());
+    .attr("x", d => x(d.data.state))
+    .attr("y", d => y(0))
+    .attr("height", 0)
+    .attr("width", x.bandwidth())
+    .transition()
+    .duration(750)
+    .attr("y", d => y(d[1]))
+    .attr("height", d => y(d[0]) - y(d[1]));
 
   // Add a legend
   const legend = svg.append("g")
