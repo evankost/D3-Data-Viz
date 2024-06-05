@@ -122,7 +122,7 @@ function createMap(mapId, titleId, region, fileCSV, fileJSON, updateMapFunction)
       .range([0, 200]);
 
     function updateMap(selectedYear) {
-      document.getElementById(titleId).textContent = `Road Accidents Mortality by ${region}`;
+      document.getElementById(titleId).textContent = `Road Accidents Mortality by ${selectedMap}`;
       document.getElementById("general-title").textContent = `Road Accidents Mortality in Greece (${selectedYear})`;
       const filteredData = deathsData.filter(d => d.year === selectedYear);
       deathsMap.clear();
