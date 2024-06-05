@@ -323,7 +323,7 @@ createMap("#map-1", "main-title", "Municipalities", "./deaths_mun.csv", "./greec
 
 createMap("#map-2", "main-title", "Regional Units", "./deaths_reg.csv", "./greece-regional-units.json", function(updateMapFunction) {
   updateMap2 = updateMapFunction;
-  //updateMap2("2022");
+  updateMap2("2022");
 });
 
 updateAllMaps(
