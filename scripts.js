@@ -335,7 +335,7 @@ updateAllMaps(
 d3.selectAll('input[name="map-toggle"]').on("change", function() {
   selectedMap = this.value;
   const selectedYear = d3.select("#year-select").property("value");
-  if (selectedMap === "municipalities") {
+  if (selectedMap === "Municipalities") {
     d3.select("#map-1").style("display", null);
     d3.select("#map-2").style("display", "none");
     d3.select("#main-title").text(`Road Accidents Mortality by Municipalities`);
