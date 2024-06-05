@@ -1,7 +1,7 @@
 const width = 800;
 const height = 600;
 const transitionDuration = 1500;
-const selectedMap = "municipalities"
+let selectedMap = "municipalities"
 
 // Create tooltip
 const tooltip = d3.select("body").append("div")
