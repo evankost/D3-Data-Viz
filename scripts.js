@@ -307,8 +307,12 @@ function createMap(mapId, titleId, region, fileCSV, fileJSON, updateMapFunction)
 function updateAllMaps(updateMap1, updateMap2) {
   d3.select("#year-select").on("change", function() {
     const selectedYear = this.value;
-    updateMap1(selectedYear);
-    updateMap2(selectedYear);
+    if (selectedMap === "municipalities"){
+      updateMap2(selectedYear);
+      updateMap1(selectedYear);
+    } else{updateMap1(selectedYear);
+        updateMap2(selectedYear);
+    }
     updateChartData(selectedYear);
   });
 }
