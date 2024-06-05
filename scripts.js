@@ -1,6 +1,7 @@
 const width = 800;
 const height = 600;
 const transitionDuration = 1500;
+const selectedMap = "municipalities"
 
 // Create tooltip
 const tooltip = d3.select("body").append("div")
@@ -332,7 +333,7 @@ updateAllMaps(
 );
 
 d3.selectAll('input[name="map-toggle"]').on("change", function() {
-  const selectedMap = this.value;
+  selectedMap = this.value;
   const selectedYear = d3.select("#year-select").property("value");
   if (selectedMap === "municipalities") {
     d3.select("#map-1").style("display", null);
