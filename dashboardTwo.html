@@ -19,18 +19,31 @@
       margin: 10px 0;
     }
     .tooltip {
-    position: absolute;
-    text-align: center;
-    width: auto;
-    height: auto;
-    padding: 5px;
-    font: 12px sans-serif;
-    background: lightsteelblue;
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
-}
-
+      position: absolute;
+      text-align: center;
+      width: auto;
+      height: auto;
+      padding: 5px;
+      font: 12px sans-serif;
+      background: lightsteelblue;
+      border: 0px;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .description {
+      text-align: left;
+      margin: 20px auto;
+      width: 70%;
+      font-size: 16px;
+      line-height: 1.5;
+      padding-bottom: 20px;
+    }
+    .description-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -63,6 +76,16 @@
       </div>
     </div>
   </div>
+  <div class="description">
+    <div class="description-title">Analyzing Educational Performance and Factors Affecting It</div>
+    <ul> This dashboard presents two key visualizations to provide insights into educational performance over time and the factors that impact it:
+
+      <li><strong>PISA Scores Over the Years:</strong> This chart displays the normalized PISA scores in Math, Reading, and Science for a selected country over various years. It also compares these scores with the global average, highlighting the performance trends and identifying periods of improvement or decline. By observing these trends, we can better understand the effectiveness of educational policies and identify areas that need attention.</li>
+      <li><strong>Impact of Behaviors and Shortages:</strong> This chart shows the positive or negative impact of different factors on education, including 'Student behavior', 'Teacher behavior', 'Staff Shortage', and 'Material Shortage'. The visualization helps in understanding how these factors influence educational outcomes and can guide targeted interventions to address specific issues. Recognizing these impacts allows for more focused efforts in improving educational environments and resources.</li>
+    </ul>
+    </div>
+    
+
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
