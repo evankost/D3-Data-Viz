@@ -513,13 +513,13 @@ function updateChart5(selectedCountry, selectedYear) {
                     .duration(150)
                     .style("opacity", .9);
                 tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
-                    .style("left", (d3.pointer(event, this)[0] + 140) + "px")
+                    .style("left", (d3.pointer(event, this)[0] + 170) + "px")
                     .style("top", (d3.pointer(event, this)[1] + 140) + "px");
             })
             .on("mousemove", function(event, d) {
 
                 tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
-                    .style("left", (d3.pointer(event, this)[0] + 140) + "px")
+                    .style("left", (d3.pointer(event, this)[0] + 170) + "px")
                     .style("top", (d3.pointer(event, this)[1] + 140) + "px");
             })
             .on("mouseout", function(d) {
