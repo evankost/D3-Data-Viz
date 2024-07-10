@@ -25,13 +25,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 15px; /* Increase the distance between radio buttons */
+      margin: 0 25px; /* Increase the distance between radio buttons */
     }
     .form-check-inline input {
       margin-right: 5px;
     }
     #yearSelector {
       height: 5px; /* Reduce the height of the year selector container */
+    }
+    .description {
+      text-align: left;
+      margin: 20px auto;
+      width: 80%;
+      font-size: 16px;
+      line-height: 1.5;
+      padding-bottom: 10px;
+    }
+    .description-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -83,6 +97,16 @@
       </div>
     </div>
   </div>
+  <div class="description">
+    <div class="description-title">Understanding Educational Outcomes and Expenditures</div>
+    <ul>This dashboard presents three distinct visualizations that offer a comprehensive overview of educational performance and expenditures across various countries, providing insights into the complex relationships between funding, resources, and student outcomes:
+      <li><strong>PISA General Results:</strong> This bar chart displays the average PISA performance per year, sorted by country. It highlights the significant variations in educational outcomes and expenditure per person, demonstrating that higher spending does not always correlate with higher performance. This suggests that factors beyond expenditure, such as educational policies, teaching quality, and socio-economic conditions, play critical roles in influencing student performance.</li>
+      <li><strong>School Ownership Distribution:</strong> The donut chart illustrates the distribution of school ownership types (Public, Private, and Private-Government dependent) for a selected country and year. This helps in understanding the diversity of educational systems and how different ownership models contribute to the overall educational landscape. By comparing the proportions of different school types, one can infer potential impacts on accessibility, quality, and outcomes of education.</li>
+      <li><strong>Education Extras:</strong> The radar chart depicts various general education metrics, including 'Creative extra-curricular activities', 'Available computers per student', 'Proportion of all teachers fully certified', 'Student-Teacher ratio', 'School Size', and 'Class Size'. These metrics provide a detailed view of the educational environment and resources available to students. Analyzing these factors helps to identify strengths and weaknesses within the educational system, offering insights into areas that may require additional investment or policy adjustments to improve overall educational quality and equity.</li>
+    </ul>
+  </div>
+  
+
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
@@ -154,13 +178,13 @@
           updateChart4(countries[0], defaultYear);
           updateChart5(countries[0], defaultYear);
           d3.select("#chart4-title").text("School Ownership in " + countrynames[0]);
-          d3.select("#chart5-title").text("Education Extras in " + countrynames[0]);
+          d3.select("#chart5-title").text("Education Metrics for " + countrynames[0]);
         } else {
           updateChart1(years[0]);
           updateChart4(countries[0], years[0]);
           updateChart5(countries[0], years[0]);
           d3.select("#chart4-title").text("School Ownership in " + countrynames[0]);
-          d3.select("#chart5-title").text("Education Extras in " + countrynames[0]);
+          d3.select("#chart5-title").text("Education Metrics for " + countrynames[0]);
         }
 
         // Add event listeners for the selectors
@@ -171,7 +195,7 @@
           updateChart5(countries[0], selectedYear);
           // Update chart titles
           d3.select("#chart4-title").text("School Ownership in " + countrynames[0]);
-          d3.select("#chart5-title").text("Education Extras in " + countrynames[0]);
+          d3.select("#chart5-title").text("Education Metrics for " + countrynames[0]);
         });
 
         function updateChart1(selectedYear) {
@@ -284,7 +308,7 @@
 
                       // Update chart titles
                       d3.select("#chart4-title").text("School Ownership in " + d['Country Name']);
-                      d3.select("#chart5-title").text("Education Extras for " + d['Country Name']);
+                      d3.select("#chart5-title").text("Education Metrics for " + d['Country Name']);
                   })
                   .on("mousemove", function(event) {
                       tooltip.style("left", (d3.pointer(event, this)[0]) + "px")
