@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Performance vs GDB</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .chart-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            width: max-content;
+        }
+        .axis-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .filter-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .grid line {
+            stroke: #e0e0e0;
+        }
+        .label {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .legend {
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="filter-container">
+        <label for="year-select">Choose a year:</label>
+        <select id="year-select"></select>
+    </div>
+    <div class="chart-container">
+        <svg width="960" height="600"></svg>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+    <script>
+        // Set dimensions and margins
+        const margin = {top: 40, right: 130, bottom: 60, left: 70},
+              width = 960 - margin.left - margin.right,
+              height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select("svg")
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom)
+                      .append("g")
+                      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const tooltip = d3.select("#tooltip");
+
+        let dataGlobal;
+
+        // Load data
+        d3.csv("Pisa Economy Final.csv").then(data => {
+            // Parse data
+            data.forEach(d => {
+                d['Year'] = +d['Year'];
+                d['Country'] = d['Country'];
+                d['Country Name'] = d['Country Name'];
+                d['Continent'] = d['Continent']; 
+                d.Performance = +d['Average Performance'];
+                d.Expenditure = +d['EDU Exp. Per Person Absolute'];
+                d.Population = +d['ROUND GDP'];
+            });
+
+            dataGlobal = data;
+
+            // Populate the dropdown with unique years, sorted from largest to smallest
+            const years = [...new Set(data.map(d => d.Year))].sort((a, b) => b - a);
+            const select = d3.select("#year-select");
+            select.selectAll("option")
+                  .data(years)
+                  .enter()
+                  .append("option")
+                  .attr("value", d => d)
+                  .text(d => d);
+
+            // Initial display
+            update(data.filter(d => d.Year === years[0]));
+
+            // Event listener for dropdown
+            select.on("change", function() {
+                const selectedYear = +this.value;
+                update(data.filter(d => d.Year === selectedYear));
+            });
+        });
+
+        function update(filteredData) {
+            // Clear previous elements
+            svg.selectAll("*").remove();
+
+            // Set scales
+            const x = d3.scaleLinear()
+                        .domain([-200, d3.max(filteredData, d => d.Expenditure) + 200])
+                        .range([0, width]);
+
+            const y = d3.scaleLinear()
+                        .domain([0, d3.max(filteredData, d => d.Performance) +100])
+                        .range([height, 0]);
+
+            const z = d3.scaleSqrt()
+                        .domain([0, d3.max(filteredData, d => d.Population)])
+                        .range([2, 30]);
+
+            // Define a color scale for continents
+            const continentColors = d3.scaleOrdinal(d3.schemeSet2);
+
+            // Define a color scale for countries within continents
+            const countryColors = {};
+            d3.groups(filteredData, d => d.Continent).forEach(group => {
+                countryColors[group[0]] = d3.scaleLinear()
+                                            .domain([0, group[1].length - 1])
+                                            .range([continentColors(group[0]), d3.color(continentColors(group[0])).darker(1)])
+                                            .interpolate(d3.interpolateLab);
+            });
+
+            const countryColorMap = {};
+            d3.groups(filteredData, d => d.Continent).forEach(group => {
+                group[1].forEach((d, i) => {
+                    countryColorMap[d.Country] = countryColors[d.Continent](i / (group[1].length - 1));
+                });
+            });
+
+            // Add X axis
+            svg.append("g")
+               .attr("transform", `translate(0,${height})`)
+               .call(d3.axisBottom(x))
+               .append("text")
+               .attr("class", "axis-title")
+               .attr("x", width / 2)
+               .attr("y", margin.bottom - 10)
+               .attr("fill", "black")
+               .style("text-anchor", "middle")
+               .text("Expenditure");
+
+            // Add Y axis
+            svg.append("g")
+               .call(d3.axisLeft(y))
+               .append("text")
+               .attr("class", "axis-title")
+               .attr("transform", "rotate(-90)")
+               .attr("x", -height / 2)
+               .attr("y", -margin.left + 20)
+               .attr("fill", "black")
+               .style("text-anchor", "middle")
+               .text("Performance");
+
+            // Add X grid lines
+            svg.append("g")
+               .attr("class", "grid")
+               .attr("transform", `translate(0,${height})`)
+               .call(d3.axisBottom(x)
+                       .tickSize(-height)
+                       .tickFormat(""));
+
+            // Add Y grid lines
+            svg.append("g")
+               .attr("class", "grid")
+               .call(d3.axisLeft(y)
+                       .tickSize(-width)
+                       .tickFormat(""));
+
+            // Group data by continent
+            const continents = d3.group(filteredData, d => d.Continent);
+
+            // Add dots
+            const groups = svg.selectAll(".continent-group")
+                              .data(continents)
+                              .enter()
+                              .append("g")
+                              .attr("class", "continent-group")
+                              .attr("id", d => `group-${d[0].replace(/\s/g, '')}`);
+
+            groups.selectAll("circle")
+                  .data(d => d[1])
+                  .enter()
+                  .append("circle")
+                  .attr("cx", d => x(d.Expenditure))
+                  .attr("cy", d => y(d.Performance))
+                  .attr("r", d => z(d.Population))
+                  .attr("fill", d => countryColorMap[d.Country])
+                  .attr("stroke", "black")
+                  .attr("stroke-width", 1)
+                  .attr("opacity", 0.7)
+                  .on("mouseenter", (event, d) => {
+                        tooltip.transition()
+                               .duration(200)
+                               .style("opacity", .9);
+                        tooltip.html(`Country: ${d['Country Name']}<br>Expenditure: ${d.Expenditure}<br>Performance: ${d.Performance}<br>Population: ${d.Population}`)
+                               .style("left", (event.pageX + 5) + "px")
+                               .style("top", (event.pageY - 28) + "px");
+
+                        d3.selectAll(".continent-group").attr("opacity", 0.1);
+                        d3.select(`#group-${d.Continent.replace(/\s/g, '')}`).attr("opacity", 1);
+                  })
+                  .on("mouseleave", d => {
+                        tooltip.transition()
+                               .duration(500)
+                               .style("opacity", 0);
+
+                        d3.selectAll(".continent-group").attr("opacity", 1);
+                  });
+
+            // Add labels
+            groups.selectAll("text")
+                  .data(d => d[1])
+                  .enter()
+                  .append("text")
+                  .attr("x", d => x(d.Expenditure))
+                  .attr("y", d => y(d.Performance))
+                  .attr("dy", -4)
+                  .attr("text-anchor", "middle")
+                  .text(d => d.Country)
+                  .attr("class", "label")
+                  .style("fill", d => "grey");//countryColorMap[d.Country]);
+
+            // Add legend for continents
+            const legend = svg.append("g")
+                              .attr("transform", `translate(${width + 20}, 0)`);
+
+            const legendItems = legend.selectAll(".legend-item")
+                                      .data(continents)
+                                      .enter()
+                                      .append("g")
+                                      .attr("class", "legend-item")
+                                      .attr("transform", (d, i) => `translate(0, ${i * 20})`)
+                                      .on("mouseenter", function(event, d) {
+                                            d3.selectAll(".continent-group").attr("opacity", 0.1);
+                                            d3.select(`#group-${d[0].replace(/\s/g, '')}`).attr("opacity", 1);
+                                      })
+                                      .on("mouseleave", function() {
+                                            d3.selectAll(".continent-group").attr("opacity", 1);
+                                      });
+
+            legendItems.append("rect")
+                       .attr("x", 0)
+                       .attr("y", 0)
+                       .attr("width", 18)
+                       .attr("height", 18)
+                       .style("fill", d => continentColors(d[0]));
+
+            legendItems.append("text")
+                       .attr("x", 24)
+                       .attr("y", 9)
+                       .attr("dy", ".35em")
+                       .style("text-anchor", "start")
+                       .text(d => d[0])
+                       .attr("class", "legend");
+        }
+    </script>
+</body>
+</html>
