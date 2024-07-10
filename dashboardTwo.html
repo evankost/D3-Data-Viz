@@ -118,7 +118,7 @@
       updateChart2(countries[0]);
       updateChart3(countries[0]);
       var selectedCountryName = countries[0];
-      d3.select("#chart2-title").text("Results per Year for Albania");
+      d3.select("#chart2-title").text("Pisa Scores per Year for Albania");
      d3.select("#chart3-title").text("Education Extras for Albania");
 
       countrySelector.on("change", function() {
@@ -126,7 +126,7 @@
         updateChart2(selectedCountry);
         updateChart3(selectedCountry);
         var selectedCountryName = data.find(d => d.Country === selectedCountry)['Country Name'];
-        d3.select("#chart2-title").text("Results per Year for " + selectedCountryName);
+        d3.select("#chart2-title").text("Pisa Scores per Year for " + selectedCountryName);
         d3.select("#chart3-title").text("Education Extras for " + selectedCountryName);
       });
 
@@ -150,6 +150,7 @@
 
     var x2 = d3.scaleLinear().range([0, width]);
     var y2 = d3.scaleLinear().range([height, 0]);
+    
 
     x2.domain([d3.min(filteredData, function(d) { return d.Year; }) - 0.5, d3.max(filteredData, function(d) { return d.Year; }) + 0.5]);
     y2.domain([0, 1]);
@@ -165,6 +166,25 @@
 
     svg2.append("g")
         .call(d3.axisLeft(y2));
+
+        // Add X axis label
+        //svg2.append("text")
+        //.attr("class", "x-axis-label")
+        //.attr("x", width / 2)
+        //.attr("y", height + margin.bottom + 5)
+        //.attr("text-anchor", "middle")
+        //.style("font-size", "12px")
+        //.text("Year");
+
+    // Add Y axis label
+    svg2.append("text")
+        .attr("class", "y-axis-label")
+        .attr("x", -height / 2)
+        .attr("y", -margin.left + 15)
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .style("font-size", "14px")
+        .text("Normalized Pisa Scores");
 
     var line = d3.line()
         .x(function(d) { return x2(d.Year); })
@@ -373,7 +393,7 @@
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .style("font-size", "10px")
-        .text("Average Values");
+        .text("All Countries Average Values");
 }
 
 
@@ -500,7 +520,12 @@ function updateChart3(selectedCountry) {
   // Add the X Axis
   svg.append("g")
      .attr("transform", "translate(0," + height + ")")
-     .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+     .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+     .selectAll("text")
+     .attr("dx", "-.8em")
+     .attr("dy", ".15em")
+     .attr("transform", "rotate(-45)")
+     .style("text-anchor", "end");
 
   // Add the Y Axis
   svg.append("g")
@@ -509,9 +534,10 @@ function updateChart3(selectedCountry) {
   // Add labels
   svg.append("text")
      .attr("text-anchor", "middle")
-     .attr("x", width / 2)
-     .attr("y", height + margin.bottom / 2 + 10)
+     .attr("x", width / 2 -20)
+     .attr("y", height + margin.bottom / 2 + 25)
      .text("Year");
+     
 
   svg.append("text")
      .attr("text-anchor", "middle")
