@@ -401,9 +401,6 @@
 }
 
 
-
-
-
 function updateChart5(selectedCountry, selectedYear) {
     var filteredData = data.filter(d => d.Country == selectedCountry);
 
@@ -411,7 +408,7 @@ function updateChart5(selectedCountry, selectedYear) {
     var container = d3.select("#chart5").node();
     var width = container.getBoundingClientRect().width - margin.left - margin.right;
     var height = container.getBoundingClientRect().height - margin.top - margin.bottom;
-        radius = Math.min(width, height) / 2;
+    var radius = Math.min(width, height) / 2;
 
     d3.select("#chart5").selectAll("*").remove();
 
@@ -475,6 +472,21 @@ function updateChart5(selectedCountry, selectedYear) {
         .attr("fill", "#737373")
         .text(d => d3.format('.1f')(d / levels));
 
+    // Create a tooltip
+    var tooltip = d3.select("#chart5").append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("text-align", "center")
+        .style("width", "120px")
+        .style("height", "auto")
+        .style("padding", "5px")
+        .style("font", "12px sans-serif")
+        .style("background", "lightsteelblue")
+        .style("border", "0px")
+        .style("border-radius", "8px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
     // Draw the segments for the polar area chart
     filteredData.forEach(d => {
         fields.forEach((field, i) => {
@@ -488,13 +500,33 @@ function updateChart5(selectedCountry, selectedYear) {
                 .startAngle(d => d.startAngle)
                 .endAngle(d => d.endAngle);
 
-            svg4.append("path")
+            var path = svg4.append("path")
                 .attr("class", "segment")
                 .attr("d", arc(segmentData[0]))
                 .style("fill", color(field))
                 .style("fill-opacity", 0.5)
                 .style("stroke", "white")
                 .style("stroke-width", "2px");
+
+            path.on("mouseover", function(event, d) {
+                tooltip.transition()
+                    .duration(150)
+                    .style("opacity", .9);
+                tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
+                    .style("left", (d3.pointer(event, this)[0] + 110) + "px")
+                    .style("top", (d3.pointer(event, this)[1] + 140) + "px");
+            })
+            .on("mousemove", function(event, d) {
+
+                tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
+                    .style("left", (d3.pointer(event, this)[0] + 110) + "px")
+                    .style("top", (d3.pointer(event, this)[1] + 140) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
 
             // Add labels to each segment
             var labelAngle = (segmentData[0].startAngle + segmentData[0].endAngle) / 2;
@@ -540,6 +572,7 @@ function updateChart5(selectedCountry, selectedYear) {
         .style("text-anchor", "start")
         .text(d => d);
 }
+
 
 
 }).catch(function(error){
