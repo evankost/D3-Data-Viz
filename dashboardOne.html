@@ -99,14 +99,13 @@
   </div>
   <div class="description">
     <div class="description-title">Understanding Educational Outcomes and Expenditures</div>
-    <ul>This dashboard presents three distinct visualizations that offer a comprehensive overview of educational performance and expenditures across various countries, providing insights into the complex relationships between funding, resources, and student outcomes:
+    <ul>
+      This dashboard presents three distinct visualizations that offer a comprehensive overview of educational performance and expenditures across various countries, providing insights into the complex relationships between funding, resources, and student outcomes:
       <li><strong>PISA General Results:</strong> This bar chart displays the average PISA performance per year, sorted by country. It highlights the significant variations in educational outcomes and expenditure per person, demonstrating that higher spending does not always correlate with higher performance. This suggests that factors beyond expenditure, such as educational policies, teaching quality, and socio-economic conditions, play critical roles in influencing student performance.</li>
       <li><strong>School Ownership Distribution:</strong> The donut chart illustrates the distribution of school ownership types (Public, Private, and Private-Government dependent) for a selected country and year. This helps in understanding the diversity of educational systems and how different ownership models contribute to the overall educational landscape. By comparing the proportions of different school types, one can infer potential impacts on accessibility, quality, and outcomes of education.</li>
       <li><strong>Education Extras:</strong> The radar chart depicts various general education metrics, including 'Creative extra-curricular activities', 'Available computers per student', 'Proportion of all teachers fully certified', 'Student-Teacher ratio', 'School Size', and 'Class Size'. These metrics provide a detailed view of the educational environment and resources available to students. Analyzing these factors helps to identify strengths and weaknesses within the educational system, offering insights into areas that may require additional investment or policy adjustments to improve overall educational quality and equity.</li>
     </ul>
   </div>
-  
-
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
@@ -322,307 +321,303 @@
                       d3.selectAll(".bar-group").transition().duration(200).style("opacity", 1);
                   });
               });
-                               // Add legend at the bottom right
-    var legendGroup = svg1.append("g")
-        .attr("class", "legend")
-        .attr("transform", `translate(${width - 350},${height})`);
 
-    legendGroup.append("circle")
-        .attr("cx", 10)
-        .attr("cy", 10)
-        .attr("r", 3)
-        .style("fill", "grey")
-        .style("stroke", "black")
-        .style("stroke-width", 1);
+          // Add legend at the bottom right
+          var legendGroup = svg1.append("g")
+              .attr("class", "legend")
+              .attr("transform", `translate(${width - 350},${height})`);
 
-    legendGroup.append("text")
-        .attr("x", 20)
-        .attr("y", 10)
-        .attr("dy", ".35em")
-        .style("text-anchor", "start")
-        .text("Education Expenditure Per Person in US Dollars");
+          legendGroup.append("circle")
+              .attr("cx", 10)
+              .attr("cy", 10)
+              .attr("r", 3)
+              .style("fill", "grey")
+              .style("stroke", "black")
+              .style("stroke-width", 1);
+
+          legendGroup.append("text")
+              .attr("x", 20)
+              .attr("y", 10)
+              .attr("dy", ".35em")
+              .style("text-anchor", "start")
+              .text("Education Expenditure Per Person in US Dollars");
         }
 
         function updateChart4(selectedCountry, selectedYear) {
-    var filteredData = data.filter(d => d.Country == selectedCountry && d.Year == selectedYear);
+          var filteredData = data.filter(d => d.Country == selectedCountry && d.Year == selectedYear);
 
-    var margin = {top: 20, right: 30, bottom: 40, left: 50};
-    var container = d3.select("#chart4").node();
-    var width = container.getBoundingClientRect().width - margin.left - margin.right;
-    var height = container.getBoundingClientRect().height - margin.top - margin.bottom;
+          var margin = {top: 20, right: 30, bottom: 40, left: 50};
+          var container = d3.select("#chart4").node();
+          var width = container.getBoundingClientRect().width - margin.left - margin.right;
+          var height = container.getBoundingClientRect().height - margin.top - margin.bottom;
 
-    d3.select("#chart4").selectAll("*").remove();
+          d3.select("#chart4").selectAll("*").remove();
 
-    var svg3 = d3.select("#chart4").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
+          var svg3 = d3.select("#chart4").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom);
 
-    var chartGroup = svg3.append("g")
-        .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+          var chartGroup = svg3.append("g")
+              .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
 
-    var radius = Math.min(width, height) / 2;
-    var pie = d3.pie()
-        .value(function(d) { return d.value; })
-        .sort(null);
+          var radius = Math.min(width, height) / 2;
+          var pie = d3.pie()
+              .value(function(d) { return d.value; })
+              .sort(null);
 
-    var arc = d3.arc()
-        .outerRadius(radius - 10)
-        .innerRadius(radius - 70); // Adjust the inner radius for donut chart
+          var arc = d3.arc()
+              .outerRadius(radius - 10)
+              .innerRadius(radius - 70); // Adjust the inner radius for donut chart
 
-    var pieData = [
-      {label: "Public", value: d3.sum(filteredData, function(d) { return d['Public Percentage']; })},
-      {label: "Private", value: d3.sum(filteredData, function(d) { return d['Private Independent Percentage']; })},
-      {label: "Private-Government", value: d3.sum(filteredData, function(d) { return d['Private Government-dependent Percentage']; })}
-    ];
+          var pieData = [
+            {label: "Public", value: d3.sum(filteredData, function(d) { return d['Public Percentage']; })},
+            {label: "Private", value: d3.sum(filteredData, function(d) { return d['Private Independent Percentage']; })},
+            {label: "Private-Government", value: d3.sum(filteredData, function(d) { return d['Private Government-dependent Percentage']; })}
+          ];
 
-    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+          var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
-    var g = chartGroup.selectAll(".arc")
-      .data(pie(pieData))
-      .enter().append("g")
-        .attr("class", "arc");
+          var g = chartGroup.selectAll(".arc")
+            .data(pie(pieData))
+            .enter().append("g")
+              .attr("class", "arc");
 
-    g.append("path")
-      .attr("d", arc)
-      .style("fill", function(d) { return colors(d.index); });
+          g.append("path")
+            .attr("d", arc)
+            .style("fill", function(d) { return colors(d.index); });
 
-    // Create a tooltip
-    var tooltip = d3.select("#chart4").append("div")
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("text-align", "center")
-        .style("width", "100px")
-        .style("height", "auto")
-        .style("padding", "5px")
-        .style("font", "12px sans-serif")
-        .style("background", "lightsteelblue")
-        .style("border", "0px")
-        .style("border-radius", "8px")
-        .style("pointer-events", "none")
-        .style("opacity", 0);
+          // Create a tooltip
+          var tooltip = d3.select("#chart4").append("div")
+              .attr("class", "tooltip")
+              .style("position", "absolute")
+              .style("text-align", "center")
+              .style("width", "100px")
+              .style("height", "auto")
+              .style("padding", "5px")
+              .style("font", "12px sans-serif")
+              .style("background", "lightsteelblue")
+              .style("border", "0px")
+              .style("border-radius", "8px")
+              .style("pointer-events", "none")
+              .style("opacity", 0);
 
-    g.on("mouseover", function(event, d) {
-        tooltip.transition()
-            .duration(150)
-            .style("opacity", .9);
-            
-        tooltip.html(d.data.label + "<br>" + d.data.value.toFixed(3))
-            .style("left", (d3.pointer(event, this)[0]) + 200+ "px")
-            .style("top", (d3.pointer(event, this)[1] + 150) + "px");
-    })
-    .on("mousemove", function(event, d) {
-           
-        tooltip.html(d.data.label + "<br>" + d.data.value.toFixed(3))
-            .style("left", (d3.pointer(event, this)[0]) + 200+ "px")
-            .style("top", (d3.pointer(event, this)[1] + 150) + "px");
-    })
-    .on("mouseout", function(d) {
-        tooltip.transition()
-            .duration(500)
-            .style("opacity", 0);
+          g.on("mouseover", function(event, d) {
+              tooltip.transition()
+                  .duration(150)
+                  .style("opacity", .9);
+                  
+              tooltip.html(d.data.label + "<br>" + d.data.value.toFixed(3))
+                  .style("left", (d3.pointer(event, this)[0]) + 200+ "px")
+                  .style("top", (d3.pointer(event, this)[1] + 150) + "px");
+          })
+          .on("mousemove", function(event, d) {
+                 
+              tooltip.html(d.data.label + "<br>" + d.data.value.toFixed(3))
+                  .style("left", (d3.pointer(event, this)[0]) + 200+ "px")
+                  .style("top", (d3.pointer(event, this)[1] + 150) + "px");
+          })
+          .on("mouseout", function(d) {
+              tooltip.transition()
+                  .duration(500)
+                  .style("opacity", 0);
+          });
+
+          var legendGroup = svg3.append("g")
+              .attr("transform", "translate(" + (margin.left) + "," + (height + margin.top + 10) + ")");
+
+          var legend = legendGroup.selectAll(".legend")
+            .data(pieData)
+            .enter().append("g")
+              .attr("class", "legend");
+
+          legend.append("rect")
+              .attr("x", function(d, i) { return i * 100; }) // Adjust the spacing between legend items horizontally
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", function(d, i) { return colors(i); });
+
+          legend.append("text")
+              .attr("x", function(d, i) { return i * 100 + 24; }) // Adjust the spacing between legend items horizontally
+              .attr("y", 9)
+              .attr("dy", ".35em")
+              .text(function(d) { return d.label; });
+        }
+
+        function updateChart5(selectedCountry, selectedYear) {
+          var filteredData = data.filter(d => d.Country == selectedCountry);
+
+          var margin = {top: 20, right: 30, bottom: 40, left: 50};
+          var container = d3.select("#chart5").node();
+          var width = container.getBoundingClientRect().width - margin.left - margin.right;
+          var height = container.getBoundingClientRect().height - margin.top - margin.bottom;
+          var radius = Math.min(width, height) / 2;
+
+          d3.select("#chart5").selectAll("*").remove();
+
+          var svg4 = d3.select("#chart5").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+
+          var fields = ['Creative extra-curricular activities', 'Available computers per student', 'Proportion of all teachers fully certified', 'Student-Teacher ratio', 'School Size', 'Class Size'];
+
+          // Normalize data
+          var maxValues = {};
+          fields.forEach(field => {
+              maxValues[field] = d3.max(filteredData, d => d[field]);
+          });
+
+          filteredData.forEach(d => {
+              fields.forEach(field => {
+                  d[field + "_norm"] = d[field] / maxValues[field];
+              });
+          });
+
+          filteredData = filteredData.filter(d => d.Year == selectedYear);
+
+          // Scale for the radius
+          var radiusScale = d3.scaleLinear()
+              .range([0, radius])
+              .domain([0, 1]);  // Normalized to 1
+
+          // Angle for each axis
+          var angleSlice = Math.PI * 2 / fields.length;
+
+          // Color scale
+          var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+          // Draw the concentric cycles
+          var levels = 5;  // Number of concentric cycles
+          var grid = svg4.append("g").attr("class", "gridWrapper");
+
+          grid.selectAll(".gridCircle")
+              .data(d3.range(1, levels + 1).reverse())
+              .enter()
+              .append("circle")
+              .attr("class", "gridCircle")
+              .attr("r", d => radius / levels * d)
+              .style("fill", "#CDCDCD")
+              .style("stroke", "#CDCDCD")
+              .style("fill-opacity", 0.1);
+
+          // Add labels for the concentric cycles
+          grid.selectAll(".gridLabel")
+              .data(d3.range(1, levels + 1).reverse())
+              .enter()
+              .append("text")
+              .attr("class", "gridLabel")
+              .attr("x", 4)
+              .attr("y", d => -d * radius / levels)
+              .attr("dy", "0.4em")
+              .style("font-size", "10px")
+              .attr("fill", "#737373")
+              .text(d => d3.format('.1f')(d / levels));
+
+          // Create a tooltip
+          var tooltip = d3.select("#chart5").append("div")
+              .attr("class", "tooltip")
+              .style("position", "absolute")
+              .style("text-align", "center")
+              .style("width", "120px")
+              .style("height", "auto")
+              .style("padding", "5px")
+              .style("font", "12px sans-serif")
+              .style("background", "lightsteelblue")
+              .style("border", "0px")
+              .style("border-radius", "8px")
+              .style("pointer-events", "none")
+              .style("opacity", 0);
+
+          // Draw the segments for the polar area chart
+          filteredData.forEach(d => {
+              fields.forEach((field, i) => {
+                  var segmentData = [
+                      {startAngle: i * angleSlice, endAngle: (i + 1) * angleSlice, value: d[field + "_norm"]}
+                  ];
+
+                  var arc = d3.arc()
+                      .innerRadius(0)
+                      .outerRadius(d => radiusScale(d.value))
+                      .startAngle(d => d.startAngle)
+                      .endAngle(d => d.endAngle);
+
+                  var path = svg4.append("path")
+                      .attr("class", "segment")
+                      .attr("d", arc(segmentData[0]))
+                      .style("fill", color(field))
+                      .style("fill-opacity", 0.5)
+                      .style("stroke", "white")
+                      .style("stroke-width", "2px");
+
+                  path.on("mouseover", function(event, d) {
+                      tooltip.transition()
+                          .duration(150)
+                          .style("opacity", .9);
+                      tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
+                          .style("left", (d3.pointer(event, this)[0] + 180) + "px")
+                          .style("top", (d3.pointer(event, this)[1] + 150) + "px");
+                  })
+                  .on("mousemove", function(event, d) {
+                      tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
+                          .style("left", (d3.pointer(event, this)[0] + 180) + "px")
+                          .style("top", (d3.pointer(event, this)[1] + 150) + "px");
+                  })
+                  .on("mouseout", function(d) {
+                      tooltip.transition()
+                          .duration(500)
+                          .style("opacity", 0);
+                  });
+
+                  // Add labels to each segment
+                  var labelAngle = (segmentData[0].startAngle + segmentData[0].endAngle) / 2;
+                  var xOffset = (radius + 10) * Math.cos(labelAngle - Math.PI / 2);
+                  var yOffset = (radius + 10) * Math.sin(labelAngle - Math.PI / 2);
+
+                  svg4.append("text")
+                      .attr("class", "legend")
+                      .style("font-size", "11px")
+                      .attr("text-anchor", "middle")
+                      .attr("dy", "0.35em")
+                      .attr("x", xOffset)
+                      .attr("y", yOffset)
+                      .text(field)
+                      .style("text-anchor", () => {
+                          if (labelAngle >= 0 && labelAngle < Math.PI) {
+                              return "start"; // Right side
+                          } else {
+                              return "end"; // Left side
+                          }
+                      });
+              });
+          });
+
+          // Add legend
+          var legend = svg4.selectAll(".legend")
+              .data(fields)
+              .enter()
+              .append("g")
+              .attr("class", "legend")
+              .attr("transform", (d, i) => `translate(0, ${i * 20})`);
+
+          legend.append("rect")
+              .attr("x", width + 18)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", color);
+
+          legend.append("text")
+              .attr("x", width + 44)
+              .attr("y", 9)
+              .attr("dy", ".35em")
+              .style("text-anchor", "start")
+              .text(d => d);
+        }
+
+      }).catch(function(error){
+        console.log("Error loading or processing data:", error);
+      });
     });
-
-    var legendGroup = svg3.append("g")
-        .attr("transform", "translate(" + (margin.left) + "," + (height + margin.top + 10) + ")");
-
-    var legend = legendGroup.selectAll(".legend")
-      .data(pieData)
-      .enter().append("g")
-        .attr("class", "legend");
-
-    legend.append("rect")
-        .attr("x", function(d, i) { return i * 100; }) // Adjust the spacing between legend items horizontally
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", function(d, i) { return colors(i); });
-
-    legend.append("text")
-        .attr("x", function(d, i) { return i * 100 + 24; }) // Adjust the spacing between legend items horizontally
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .text(function(d) { return d.label; });
-}
-
-
-function updateChart5(selectedCountry, selectedYear) {
-    var filteredData = data.filter(d => d.Country == selectedCountry);
-
-    var margin = {top: 20, right: 30, bottom: 40, left: 50};
-    var container = d3.select("#chart5").node();
-    var width = container.getBoundingClientRect().width - margin.left - margin.right;
-    var height = container.getBoundingClientRect().height - margin.top - margin.bottom;
-    var radius = Math.min(width, height) / 2;
-
-    d3.select("#chart5").selectAll("*").remove();
-
-    var svg4 = d3.select("#chart5").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
-
-    var fields = ['Creative extra-curricular activities', 'Available computers per student', 'Proportion of all teachers fully certified', 'Student-Teacher ratio', 'School Size', 'Class Size'];
-
-    // Normalize data
-    var maxValues = {};
-    fields.forEach(field => {
-        maxValues[field] = d3.max(filteredData, d => d[field]);
-    });
-
-    filteredData.forEach(d => {
-        fields.forEach(field => {
-            d[field + "_norm"] = d[field] / maxValues[field];
-        });
-    });
-
-    filteredData = filteredData.filter(d => d.Year == selectedYear);
-
-    // Scale for the radius
-    var radiusScale = d3.scaleLinear()
-        .range([0, radius])
-        .domain([0, 1]);  // Normalized to 1
-
-    // Angle for each axis
-    var angleSlice = Math.PI * 2 / fields.length;
-
-    // Color scale
-    var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-    // Draw the concentric cycles
-    var levels = 5;  // Number of concentric cycles
-    var grid = svg4.append("g").attr("class", "gridWrapper");
-
-    grid.selectAll(".gridCircle")
-        .data(d3.range(1, levels + 1).reverse())
-        .enter()
-        .append("circle")
-        .attr("class", "gridCircle")
-        .attr("r", d => radius / levels * d)
-        .style("fill", "#CDCDCD")
-        .style("stroke", "#CDCDCD")
-        .style("fill-opacity", 0.1);
-
-    // Add labels for the concentric cycles
-    grid.selectAll(".gridLabel")
-        .data(d3.range(1, levels + 1).reverse())
-        .enter()
-        .append("text")
-        .attr("class", "gridLabel")
-        .attr("x", 4)
-        .attr("y", d => -d * radius / levels)
-        .attr("dy", "0.4em")
-        .style("font-size", "10px")
-        .attr("fill", "#737373")
-        .text(d => d3.format('.1f')(d / levels));
-
-    // Create a tooltip
-    var tooltip = d3.select("#chart5").append("div")
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("text-align", "center")
-        .style("width", "120px")
-        .style("height", "auto")
-        .style("padding", "5px")
-        .style("font", "12px sans-serif")
-        .style("background", "lightsteelblue")
-        .style("border", "0px")
-        .style("border-radius", "8px")
-        .style("pointer-events", "none")
-        .style("opacity", 0);
-
-    // Draw the segments for the polar area chart
-    filteredData.forEach(d => {
-        fields.forEach((field, i) => {
-            var segmentData = [
-                {startAngle: i * angleSlice, endAngle: (i + 1) * angleSlice, value: d[field + "_norm"]}
-            ];
-
-            var arc = d3.arc()
-                .innerRadius(0)
-                .outerRadius(d => radiusScale(d.value))
-                .startAngle(d => d.startAngle)
-                .endAngle(d => d.endAngle);
-
-            var path = svg4.append("path")
-                .attr("class", "segment")
-                .attr("d", arc(segmentData[0]))
-                .style("fill", color(field))
-                .style("fill-opacity", 0.5)
-                .style("stroke", "white")
-                .style("stroke-width", "2px");
-
-            path.on("mouseover", function(event, d) {
-                tooltip.transition()
-                    .duration(150)
-                    .style("opacity", .9);
-                tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
-                    .style("left", (d3.pointer(event, this)[0] + 180) + "px")
-                    .style("top", (d3.pointer(event, this)[1] + 150) + "px");
-            })
-            .on("mousemove", function(event, d) {
-
-                tooltip.html(field + "<br>" + "Value: " + segmentData[0].value.toFixed(2))
-                    .style("left", (d3.pointer(event, this)[0] + 180) + "px")
-                    .style("top", (d3.pointer(event, this)[1] + 150) + "px");
-            })
-            .on("mouseout", function(d) {
-                tooltip.transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-
-            // Add labels to each segment
-            var labelAngle = (segmentData[0].startAngle + segmentData[0].endAngle) / 2;
-            var xOffset = (radius + 10) * Math.cos(labelAngle - Math.PI / 2);
-            var yOffset = (radius + 10) * Math.sin(labelAngle - Math.PI / 2);
-
-            svg4.append("text")
-                .attr("class", "legend")
-                .style("font-size", "11px")
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.35em")
-                .attr("x", xOffset)
-                .attr("y", yOffset)
-                .text(field)
-                .style("text-anchor", () => {
-                    if (labelAngle >= 0 && labelAngle < Math.PI) {
-                        return "start"; // Right side
-                    } else {
-                        return "end"; // Left side
-                    }
-                });
-        });
-    });
-
-    // Add legend
-    var legend = svg4.selectAll(".legend")
-        .data(fields)
-        .enter()
-        .append("g")
-        .attr("class", "legend")
-        .attr("transform", (d, i) => `translate(0, ${i * 20})`);
-
-    legend.append("rect")
-        .attr("x", width + 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    legend.append("text")
-        .attr("x", width + 44)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "start")
-        .text(d => d);
-}
-
-
-
-}).catch(function(error){
-console.log("Error loading or processing data:", error);
-});
-});
-</script>
+  </script>
 </body>
 </html>
-
